@@ -19,7 +19,7 @@ wss.on('connection', (ws) => {
             b += 1;  // Increment the count when a user is added
             
         }
-        ws.send('kk');
+        ws.send('send');
     }
 
     ws.on('message', (message) => {
