@@ -11,14 +11,15 @@ wss.on('connection', (ws) => {
     // Assign the first user to be the sender
     if (!sender) {
         sender = ws;
-        ws.send('You are the sender.');
+        ws.send('sender');
     } else {
         // Add new users (excluding sender) if fewer than 3 exist
         if (users.length < 3 && !users.find(u => u.ws === ws)) {
             users.push({ ws, battery: null });
             b += 1;  // Increment the count when a user is added
-            console.log(b);
+            
         }
+        ws.send('kk');
     }
 
     ws.on('message', (message) => {
@@ -31,29 +32,30 @@ wss.on('connection', (ws) => {
             if (user) {
                 user.battery = battery;
                 a += 1;  // Increment count when a battery value is received
-                console.log(`inside: ${a}`);
+                
 
             }
         }
 
         // If message type is 'low' or 'hi', process it
-        if (msg) {
-            if (msg === 'low' && sender) {
+        if (msg && sender) {
+            if (msg === 'low') {
                 // Notify all users to send battery values
                 a = 0;  // Reset count for the new battery values
-
+        
                 users.forEach((user) => {
                     if (user.ws.readyState === WebSocket.OPEN) {
-                        user.ws.send('send battery values');
+                        user.ws.send('send');
                     }
                 });
                 // Reset all battery values to null
                 users.forEach(user => user.battery = null);
-            } else if (msg === 'hi' && sender) {
-                // Notify sender that a user says 'hi'
-                sender.send('Hi received from a user');
+            } else {
+                // Send any received message back to the sender
+                sender.send(`Message received: ${msg}`);
             }
         }
+        
 
         // Check if all users have sent their battery values
         if (users.length === 3 && users.every(u => u.battery !== null)) {
@@ -65,15 +67,14 @@ wss.on('connection', (ws) => {
             // Send message only to the max user if the battery values have changed
             if (b === 3 || a===3 ) {
                 maxUser.ws.send(JSON.stringify({
-                    message: 'You have the highest battery.',
+                    message: 'max',
                     maxBattery: maxUser.battery,
                     secondMaxBattery: secondMaxUser.battery,
                 }));
 
                 b = 0; 
                 a=0; // Reset count after notifying
-                console.log(`Value of a is: ${a}`);
-                console.log(`Value of b is: ${b}`);
+                
 
             }
         }
