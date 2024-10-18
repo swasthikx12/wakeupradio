@@ -11,7 +11,8 @@ wss.on('connection', (ws) => {
     // Assign the first user to be the sender
     if (!sender) {
         sender = ws;
-        ws.send('sender');
+        ws.send(JSON.stringify({ message: "sender" }));
+
     } else {
         // Add new users (excluding sender) if fewer than 3 exist
         if (users.length < 3 && !users.find(u => u.ws === ws)) {
@@ -19,7 +20,8 @@ wss.on('connection', (ws) => {
             b += 1;  // Increment the count when a user is added
             
         }
-        ws.send('send');
+        ws.send(JSON.stringify({ message: "send" }));
+
     }
 
     ws.on('message', (message) => {
