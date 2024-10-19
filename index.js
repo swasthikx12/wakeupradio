@@ -44,7 +44,7 @@ wss.on('connection', (ws) => {
             if (message === 'low') {
                 // Notify all users to send battery values
                 a = 0;  // Reset count for the new battery values
-                console.log("maxuser message to sender:",message);
+                
         
                 users.forEach((user) => {
                     if (user.ws.readyState === WebSocket.OPEN) {
@@ -55,7 +55,6 @@ wss.on('connection', (ws) => {
                 users.forEach(user => user.battery = null);
             } else {
                 // Send any received message back to the sender
-                console.log("sender recieved:",message);
                 sender.send(JSON.stringify(message));
             }
         }
