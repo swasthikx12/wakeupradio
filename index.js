@@ -56,7 +56,7 @@ wss.on('connection', (ws) => {
             } else {
                 // Send any received message back to the sender
                 console.log("sender recieved:",message);
-                sender.send(message);
+                sender.send(JSON.stringify(message));
             }
         }
         
