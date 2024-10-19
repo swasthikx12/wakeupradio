@@ -55,7 +55,8 @@ wss.on('connection', (ws) => {
                 users.forEach(user => user.battery = null);
             } else {
                 // Send any received message back to the sender
-                sender.send(JSON.stringify(message));
+                const formattedMessage = { message: message };
+                sender.send(JSON.stringify(formattedMessage));
             }
         }
         
