@@ -24,9 +24,9 @@ wss.on('connection', (ws) => {
 
     }
 
-    ws.on('message', (message) => {
-        const parsed = JSON.parse(message);
-        const { battery, msg } = parsed;
+    ws.on('message', (m) => {
+        const parsed = JSON.parse(m);
+        const { battery, message } = parsed;
 
         // Assign battery value to the user who sent the message
         if (battery !== undefined) {  // Check if battery exists
@@ -40,10 +40,11 @@ wss.on('connection', (ws) => {
         }
 
         // If message type is 'low' or 'hi', process it
-        if (msg && sender) {
-            if (msg === 'low') {
+        if (message && sender) {
+            if (message === 'low') {
                 // Notify all users to send battery values
                 a = 0;  // Reset count for the new battery values
+                console.log("maxuser message to sender:",message);
         
                 users.forEach((user) => {
                     if (user.ws.readyState === WebSocket.OPEN) {
@@ -54,7 +55,8 @@ wss.on('connection', (ws) => {
                 users.forEach(user => user.battery = null);
             } else {
                 // Send any received message back to the sender
-                sender.send(`Message received: ${msg}`);
+                console.log("sender recieved:",message);
+                sender.send(message);
             }
         }
         
